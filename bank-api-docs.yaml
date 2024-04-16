@@ -1,0 +1,742 @@
+openapi: 3.0.1
+info:
+  title: Banking System API
+  description: Documentation for Simple Banking System API
+  version: 1.0.1
+  contact:
+    email: rizkirobawa@gmail.com
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://localhost:3000/api/v1
+tags:
+  - name: Users
+    description: Operations about Users
+  - name: Accounts
+    description: Operations about Accounts
+  - name: Transactions
+    description: Operations about Transactions
+paths:
+  /users:
+    post:
+      tags:
+        - "Users"
+      summary: Create a new user with profile
+      description: Add user along with their profile to the system
+      requestBody:
+        required: true
+        $ref: "#/components/requestBodies/CreateUserWithProfile"
+      responses:
+        201:
+          description: The user has been successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Register Successfully
+                  data:
+                    type: object
+                    allOf:
+                      - $ref: "#/components/schemas/Users"
+                      - properties:
+                          profile:
+                            $ref: "#/components/schemas/Profiles"
+        400:
+          description: Email already used!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Email already used!
+        401:
+          description: Invalid identity_type. Must be KTP, SIM, or Passport
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid identity_type. Must be KTP, SIM, or Passport
+        402:
+          description: Invalid identity_type. Must be KTP, SIM, or Passport
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid identity number. Must be exactly 16 characters
+        403:
+          description: Identity number must be unique
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Identity number already used!
+    get:
+      tags:
+        - "Users"
+      summary: Get all user
+      description: Get all user
+      parameters:
+        - schema:
+            type: string
+          name: search
+          in: query
+      responses:
+        200:
+          description: Get all user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: OK
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      $ref: "#/components/schemas/Users"
+  /users/{id}:
+    get:
+      tags:
+        - "Users"
+      summary: Get user by id
+      description: Get user by id
+      parameters:
+        - schema:
+            type: integer
+          name: id
+          description: ID of user to return
+          in: path
+          required: true
+      responses:
+        200:
+          description: Get user by id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: OK
+                  data:
+                    type: object
+                    allOf:
+                      - $ref: "#/components/schemas/Users"
+                      - properties:
+                          profile:
+                            $ref: "#/components/schemas/Profiles"
+        400:
+          description: Can't find user with ID 1
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Can't find user with ID
+    put:
+      tags:
+        - "Users"
+      summary: Update a user by ID
+      description: Update user profile information
+      parameters:
+        - schema:
+            type: integer
+          name: id
+          description: ID of user to return
+          in: path
+          required: true
+      requestBody:
+        required: true
+        $ref: "#/components/requestBodies/CreateUserWithProfile"
+      responses:
+        200:
+          description: Edit user by id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Update user with ID 1 successfully
+                  data:
+                    type: object
+                    allOf:
+                      - $ref: "#/components/schemas/Users"
+                      - properties:
+                          profile:
+                            $ref: "#/components/schemas/Profiles"
+        400:
+          description: User with ID 23 not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: User with ID 23 not found
+    delete:
+      tags:
+        - "Users"
+      summary: Delete user by id
+      description: Delete user by id
+      parameters:
+        - schema:
+            type: integer
+          name: id
+          description: The ID of the category to retrieve.
+          in: path
+          required: true
+      responses:
+        200:
+          description: The user has been successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User with ID 14 deleted successfully
+  /accounts:
+    post:
+      tags:
+        - "Accounts"
+      summary: Create a new account
+      description: Create a new account
+      requestBody:
+        required: true
+        $ref: "#/components/requestBodies/CreateAccount"
+      responses:
+        200:
+          description: Bank Account created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Bank Account created successfully
+                  data:
+                    type: object
+                    $ref: "#/components/schemas/Accounts"
+        404:
+          description: ID not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Account with ID 23 not found
+    get:
+      tags:
+        - "Accounts"
+      summary: Get all Account
+      description: Get all account
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: OK
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      $ref: "#/components/schemas/Accounts"
+  /accounts/{id}:
+    get:
+      tags:
+        - "Accounts"
+      summary: Get account by id
+      description: Get account by id
+      parameters:
+        - schema:
+            type: integer
+          name: id
+          description: The ID of the account.
+          in: path
+          required: true
+      responses:
+        200:
+          description: Returns a single account
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: OK
+                  data:
+                    type: object
+                    $ref: "#/components/schemas/Accounts"
+        404:
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Can't find account with ID 23
+    put:
+      tags:
+        - "Accounts"
+      summary: Update an account by ID
+      description: Update account information
+      parameters:
+        - schema:
+            type: integer
+          name: id
+          description: ID of account to return
+          in: path
+          required: true
+      requestBody:
+        required: true
+        $ref: "#/components/requestBodies/CreateAccount"
+      responses:
+        200:
+          description: Update account
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Update account with ID 1 successfully
+                  data:
+                    type: object
+                    $ref: "#/components/schemas/Accounts"
+        404:
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Account with ID 23 not found
+    delete:
+      tags:
+        - "Accounts"
+      summary: Delete an account by ID
+      description: Delete account information
+      parameters:
+        - schema:
+            type: integer
+          name: id
+          description: ID of account to return
+          in: path
+          required: true
+      responses:
+        200:
+          description: The account has been successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Account with ID 23 deleted successfully
+        404:
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Account with ID 23 not found
+  /transactions:
+    post:
+      tags:
+        - "Transactions"
+      summary: Create transaction
+      description: Create transaction
+      requestBody:
+        required: true
+        $ref: "#/components/requestBodies/CreateTransaction"
+      responses:
+        200:
+          description: Created transaction successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Transaction successsfully
+                  data:
+                    type: object
+                    properties:
+                      sourceAccount:
+                        $ref: "#/components/schemas/Accounts"
+                      destinationAccount:
+                        $ref: "#/components/schemas/Accounts"
+                      transaction:
+                        $ref: "#/components/schemas/Transactions"
+        400:
+          description: Insufficient balance in the account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: The balance in the source account is insufficient
+        404:
+          description: Source or destination account not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Can't find source or destination account
+    get:
+      tags:
+        - "Transactions"
+      summary: Get all transaction
+      description: Get all transaction
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: OK
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      $ref: "#/components/schemas/Transactions"
+  /transactions/{id}:
+    get:
+      tags:
+        - "Transactions"
+      summary: Get transaction by id
+      description: Get transaction by id
+      parameters:
+        - schema:
+            type: integer
+          name: id
+          description: The ID of the transaction.
+          in: path
+          required: true
+      responses:
+        200:
+          description: Returns a single transaction
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Transaction successfully
+                  data:
+                    type: object
+                    properties:
+                      sourceAccount:
+                        $ref: "#/components/schemas/Accounts"
+                      destinationAccount:
+                        $ref: "#/components/schemas/Accounts"
+                      transaction:
+                        $ref: "#/components/schemas/Transactions"
+        404:
+          description: Transaction id not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Can't find transaction with ID 22
+    delete:
+      tags:
+        - "Transactions"
+      summary: Deleted transaction by id
+      description: Deleted transaction by id
+      parameters:
+        - schema:
+            type: integer
+          name: id
+          description: The ID of the transaction.
+          in: path
+          required: true
+      responses:
+        200:
+          description: Delete data has been successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Transaction with ID 11 deleted successfully
+        404:
+          description: Transaction id not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Can't find transaction with ID 22
+components:
+  schemas:
+    Users:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: kibow
+        email:
+          type: string
+          example: kibow@gmail.com
+        password:
+          type: string
+          example: 123456
+        identity_type:
+          type: string
+          example: KTP
+        identity_number:
+          type: string
+          example: 3578015325300145
+        address:
+          type: string
+          example: Jl. Menuju Surga No.3
+    Profiles:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        identity_type:
+          type: string
+          example: KTP
+        identity_number:
+          type: string
+          example: 3578015325300145
+        address:
+          type: string
+          example: Jl. Menuju Surga No.3
+        user_id:
+          type: integer
+          example: 1
+    Accounts:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        bank_name:
+          type: string
+          example: BTN
+        bank_account_number:
+          type: string
+          example: 6591145268478561
+        balance:
+          type: integer
+          example: 75000
+        user_id:
+          type: integer
+          example: 1
+    Transactions:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 5
+        amount:
+          type: integer
+          example: 50000
+        sourceAccountId:
+          type: integer
+          example: 1
+        destinationAccountId:
+          type: integer
+          example: 2
+  requestBodies:
+    CreateUserWithProfile:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: kibow
+              email:
+                type: string
+                example: kibow@gmail.com
+              password:
+                type: string
+                example: 123456
+              identity_type:
+                type: string
+                example: KTP
+              identity_number:
+                type: string
+                example: 3578015325300145
+              address:
+                type: string
+                example: Jl. Menuju Surga No.3
+    CreateAccount:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              bank_name:
+                type: string
+                example: BTN
+              bank_account_number:
+                type: string
+                example: 6591145268478561
+              balance:
+                type: integer
+                example: 75000
+              user_id:
+                type: integer
+                example: 1
+    CreateTransaction:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              amount:
+                type: integer
+                example: 100000
+              sourceAccount:
+                type: integer
+                example: 1
+              destinationAccount:
+                type: integer
+                example: 2

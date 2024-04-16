@@ -1,0 +1,86 @@
+### create users include profiles
+POST http://localhost:3000/api/v1/users
+Content-Type: application/json
+
+{
+    "name": "dewa",
+    "email": "dewa@gmail.com",
+    "password": "123456",
+    "identity_type": "KTP",
+    "identity_number": "3856584952123587",
+    "address": "Jl. Kembar"
+
+}
+
+### get all users
+GET http://localhost:3000/api/v1/users
+
+### get users by id
+GET http://localhost:3000/api/v1/users/1
+
+### update users includ profiles by id
+PUT http://localhost:3000/api/v1/users/19
+Content-Type: application/json
+
+{
+    "name": "pOke777",
+    "email": "poke777@gmail.com",
+    "password": "poke2",
+    "identity_type": "KTP",
+    "identity_number": "3578012412020127",
+    "address": "Jl. Babatan No 3"
+
+}
+
+### delete users by id
+DELETE http://localhost:3000/api/v1/users/14
+
+### create bank_accounts
+POST http://localhost:3000/api/v1/accounts
+Content-Type: application/json
+
+{
+    "bank_name": "BNI",
+    "bank_account_number": "143947622227195",
+    "balance": 750000,
+    "user_id": 1
+}
+
+### get all accounts
+GET http://localhost:3000/api/v1/accounts
+
+### get account by id
+GET http://localhost:3000/api/v1/accounts/7
+
+### update accounts by id
+PUT http://localhost:3000/api/v1/accounts/5
+Content-Type: application/json
+
+{
+    "bank_name": "BCA Syariah",
+    "bank_account_number": "7651839587558",
+    "balance": 200001
+
+}
+
+### delete accounts by id
+DELETE http://localhost:3000/api/v1/accounts/7
+
+### create transactions
+POST http://localhost:3000/api/v1/transactions
+Content-Type: application/json
+
+{
+    "amount": 200000,
+    "sourceAccount": 2,
+    "destinationAccount": 3
+}
+
+### get all transactions
+GET http://localhost:3000/api/v1/transactions
+
+### get transactions by id
+GET http://localhost:3000/api/v1/transactions/8
+
+### delete transactions by id
+DELETE http://localhost:3000/api/v1/transactions/22
