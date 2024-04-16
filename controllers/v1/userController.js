@@ -23,10 +23,6 @@ module.exports = {
       existingUser = await prisma.user.findFirst({
         where: { profile: { identity_number } },
       });
-  
-      if (existingUser) {
-        return handleError(res, 403, "Identity number already used!");
-      }
 
       if (!["KTP", "SIM", "Passport"].includes(identity_type)) {
         return handleError(
@@ -42,6 +38,10 @@ module.exports = {
           402,
           "Invalid identity number. Must be exactly 16 characters"
         );
+      }
+
+      if (existingUser) {
+        return handleError(res, 403, "Identity number already used!");
       }
 
       let user = await prisma.user.create({

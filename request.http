@@ -3,12 +3,12 @@ POST http://localhost:3000/api/v1/users
 Content-Type: application/json
 
 {
-    "name": "dewa",
-    "email": "dewa@gmail.com",
+    "name": "asto1",
+    "email": "asto1@gmail.com",
     "password": "123456",
     "identity_type": "KTP",
-    "identity_number": "3856584952123587",
-    "address": "Jl. Kembar"
+    "identity_number": "38565849521",
+    "address": "Jl. Fly"
 
 }
 
