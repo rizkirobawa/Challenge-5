@@ -19,7 +19,7 @@ GET http://localhost:3000/api/v1/users
 GET http://localhost:3000/api/v1/users/1
 
 ### update users includ profiles by id
-PUT http://localhost:3000/api/v1/users/19
+PUT http://localhost:3000/api/v1/users/11
 Content-Type: application/json
 
 {
@@ -33,7 +33,7 @@ Content-Type: application/json
 }
 
 ### delete users by id
-DELETE http://localhost:3000/api/v1/users/14
+DELETE http://localhost:3000/api/v1/users/123
 
 ### create bank_accounts
 POST http://localhost:3000/api/v1/accounts

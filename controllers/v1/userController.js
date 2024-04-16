@@ -143,6 +143,14 @@ module.exports = {
           "Invalid identity number. Must be exactly 16 characters"
         );
       }
+      
+      const exist = await prisma.user.findUnique({
+        where: { id },
+      });
+      
+      if (!exist) {
+        return handleError(res, 404, `User with ID ${id} not found`);
+      }
 
       const user = await prisma.user.update({
         where: { id: id },
@@ -163,9 +171,6 @@ module.exports = {
         },
       });
 
-      if (!user) {
-        return handleError(res, 404, `User with ID ${id} not found`);
-      }
 
       res.status(200).json({
         status: true,
