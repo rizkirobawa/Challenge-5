@@ -7,7 +7,7 @@ Content-Type: application/json
     "email": "asto1@gmail.com",
     "password": "123456",
     "identity_type": "KTP",
-    "identity_number": "38565849521",
+    "identity_number": "1385658495212223",
     "address": "Jl. Fly"
 
 }
@@ -16,7 +16,7 @@ Content-Type: application/json
 GET http://localhost:3000/api/v1/users
 
 ### get users by id
-GET http://localhost:3000/api/v1/users/1
+GET http://localhost:3000/api/v1/users/84
 
 ### update users includ profiles by id
 PUT http://localhost:3000/api/v1/users/11
@@ -33,7 +33,7 @@ Content-Type: application/json
 }
 
 ### delete users by id
-DELETE http://localhost:3000/api/v1/users/123
+DELETE http://localhost:3000/api/v1/users/
 
 ### create bank_accounts
 POST http://localhost:3000/api/v1/accounts
@@ -43,24 +43,23 @@ Content-Type: application/json
     "bank_name": "BNI",
     "bank_account_number": "143947622227195",
     "balance": 750000,
-    "user_id": 1
+    "user_id": 71
 }
 
 ### get all accounts
 GET http://localhost:3000/api/v1/accounts
 
 ### get account by id
-GET http://localhost:3000/api/v1/accounts/7
+GET http://localhost:3000/api/v1/accounts/24
 
 ### update accounts by id
-PUT http://localhost:3000/api/v1/accounts/5
+PUT http://localhost:3000/api/v1/accounts/111
 Content-Type: application/json
 
 {
     "bank_name": "BCA Syariah",
-    "bank_account_number": "7651839587558",
+    "bank_account_number": "2347651839587558",
     "balance": 200001
-
 }
 
 ### delete accounts by id

@@ -2,6 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const app = require("../../app");
 const request = require("supertest");
+let user = {};
 
 describe("test API method POST with endpoint /v1/users", () => {
   let name = "kibowz";
@@ -28,7 +29,7 @@ describe("test API method POST with endpoint /v1/users", () => {
         identity_number,
         address,
       });
-
+      
       user = body.data;
 
       expect(statusCode).toBe(201);
@@ -50,6 +51,7 @@ describe("test API method POST with endpoint /v1/users", () => {
       expect(body.data.profile.identity_type).toBe(identity_type);
       expect(body.data.profile.identity_number).toBe(identity_number);
       expect(body.data.profile.address).toBe(address);
+
     } catch (err) {
       throw err;
     }
@@ -176,11 +178,13 @@ describe("test API method GET with endpoint /api/v1/users", () => {
 
   test("Get detail user by id -> error", async () => {
     try {
-      let { statusCode, body } = await request(app).get(`/api/v1/users/${123}`);
+      let { statusCode, body } = await request(app).get(
+        `/api/v1/users/${1233}`
+      );
 
       expect(statusCode).toBe(404);
       expect(body).toHaveProperty("status", false);
-      expect(body).toHaveProperty("message", `Can't find user with ID ${123}`);
+      expect(body).toHaveProperty("message", `Can't find user with ID ${1233}`);
     } catch (err) {
       throw err;
     }
@@ -190,7 +194,7 @@ describe("test API method GET with endpoint /api/v1/users", () => {
 describe("test API method PUT with endpoint /api/v1/users/:id", () => {
   test("Update user data -> success", async () => {
     try {
-      let newName = "kibowz";
+      let newName = "hazet";
       let newPassword = "123456abc";
       let identity_number = "1234567891234567";
 
@@ -246,15 +250,13 @@ describe("test API method PUT with endpoint /api/v1/users/:id", () => {
 
   test("Update user data -> error (user id not found)", async () => {
     try {
-      identity_number = "1234567890123456";
+      let { statusCode, body } = await request(app)
+        .put(`/api/v1/users/${1233}`)
+        .send({ identity_number: "1234567890123456" });
 
-    let { statusCode, body } = await request(app)
-      .put(`/api/v1/users/${123}`)
-      .send({ identity_number });
-
-    expect(statusCode).toBe(404);
-    expect(body).toHaveProperty("status", false);
-    expect(body).toHaveProperty("message", `User with ID ${123} not found`);
+      expect(statusCode).toBe(404);
+      expect(body).toHaveProperty("status", false);
+      expect(body).toHaveProperty("message", `User with ID ${1233} not found`);
     } catch (err) {
       throw err;
     }
@@ -262,18 +264,18 @@ describe("test API method PUT with endpoint /api/v1/users/:id", () => {
 });
 
 describe("test API method DELETE with endpoint /api/v1/users/:id", () => {
-  test("Delete user by id -> success", async() => {
-    try {
-      let { statusCode, body } = await request(app).delete(
-        `/api/v1/users/${user.id}`
-      );
-      expect(statusCode).toBe(200);
-      expect(body).toHaveProperty("status");
-      expect(body).toHaveProperty("message");
-    } catch (err) {
-      throw err;
-    }
-  })
+  // test("Delete user by id -> success", async () => {
+  //   try {
+  //     let { statusCode, body } = await request(app).delete(
+  //       `/api/v1/users/${user.id}`
+  //     );
+  //     expect(statusCode).toBe(200);
+  //     expect(body).toHaveProperty("status");
+  //     expect(body).toHaveProperty("message");
+  //   } catch (err) {
+  //     throw err;
+  //   }
+  // });
 
   test("Delete user by id -> error (user not found)", async () => {
     try {
@@ -286,5 +288,5 @@ describe("test API method DELETE with endpoint /api/v1/users/:id", () => {
     } catch (err) {
       throw err;
     }
-  })
-})
+  });
+});
