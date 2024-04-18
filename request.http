@@ -40,10 +40,10 @@ POST http://localhost:3000/api/v1/accounts
 Content-Type: application/json
 
 {
-    "bank_name": "BNI",
-    "bank_account_number": "143947622227195",
+    "bank_name": "Mandiri",
+    "bank_account_number": "143947632227195",
     "balance": 750000,
-    "user_id": 71
+    "user_id": 83
 }
 
 ### get all accounts
@@ -63,16 +63,16 @@ Content-Type: application/json
 }
 
 ### delete accounts by id
-DELETE http://localhost:3000/api/v1/accounts/7
+DELETE http://localhost:3000/api/v1/accounts/86
 
 ### create transactions
 POST http://localhost:3000/api/v1/transactions
 Content-Type: application/json
 
 {
-    "amount": 200000,
-    "sourceAccount": 2,
-    "destinationAccount": 3
+    "amount": 100000,
+    "sourceAccount": 101,
+    "destinationAccount": 102
 }
 
 ### get all transactions

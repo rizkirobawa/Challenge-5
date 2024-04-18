@@ -5,7 +5,11 @@
   "scripts": {
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
-    "test": "jest"
+    "test": "jest",
+    "test:users": "jest tests/integration/users.spec.js",
+    "test:accounts": "jest tests/integration/accounts.spec.js",
+    "test:transactions": "jest tests/integration/transactions.spec.js",
+    "test:sequential": "yarn run test:users && yarn run test:accounts && yarn run test:transactions"
   },
   "dependencies": {
     "@prisma/client": "5.11.0",

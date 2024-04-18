@@ -63,17 +63,19 @@ module.exports = {
         },
       });
 
-      res.status(200).json({
+      res.status(201).json({
         status: true,
         message: `Transaction successsfully`,
-        data: {
-          sourceAccount: updateSourceAccount,
-          destinationAccount: updateDestinationAccount,
-          transaction: createTransaction,
-        },
+        data: createTransaction,
+        // sourceAccount: updateSourceAccount,
+        // destinationAccount: updateDestinationAccount,
+        // transaction: createTransaction,
       });
-    } catch (error) {
-      next(error);
+
+      console.log("Source Account:", sourceAccount);
+      console.log("Destination Account:", destinationAccount);
+    } catch (err) {
+      next(err);
     }
   },
   index: async (req, res, next) => {
@@ -105,13 +107,11 @@ module.exports = {
         return handleError(res, 404, `Can't find transaction with ID ${id}`);
       }
 
-      res
-        .status(200)
-        .json({
-          status: true,
-          message: "Transaction successsfully",
-          data: transaction,
-        });
+      res.status(200).json({
+        status: true,
+        message: "Transaction successsfully",
+        data: transaction,
+      });
     } catch (error) {
       next(error);
     }
