@@ -9,7 +9,7 @@ const yaml = require("yaml");
 const fs = require("fs");
 const path = require("path");
 
-const swagger_path = path.resolve(__dirname, "../../bank-api-docs.yaml");
+const swagger_path = path.resolve(__dirname, "../../docs/bank-api-docs.yaml");
 const file = fs.readFileSync(swagger_path, "utf-8");
 
 const swaggerDocument = yaml.parse(file);

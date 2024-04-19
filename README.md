@@ -48,6 +48,12 @@ yarn test:accounts
 yarn test:transactions
 ```
 
+### Testing Authentication:
+
+```bash
+yarn test:auth
+```
+
 ## Testing Delete
 
 Jika ingin melakukan testing delete pada setiap modul (users, accounts, transactions), ikuti langkah-langkah berikut:
