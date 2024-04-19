@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const {
+  store,
   create,
   index,
   show,

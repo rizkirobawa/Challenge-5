@@ -1,5 +1,4 @@
 const { PrismaClient } = require("@prisma/client");
-const { destroy } = require("./accountController");
 const prisma = new PrismaClient();
 
 // Error handling function
@@ -10,23 +9,34 @@ const handleError = (res, statusCode, message) => {
 module.exports = {
   create: async (req, res, next) => {
     try {
-      const amount = req.body.amount;
-      const sourceAccountId = Number(req.body.sourceAccount);
-      const destinationAccountId = Number(req.body.destinationAccount);
+      const {
+        amount,
+        sourceAccountId = req.body.sourceAccount,
+        destinationAccountId = req.body.destinationAccount,
+      } = req.body;
 
       const sourceAccount = await prisma.bankAccount.findUnique({
         where: { id: sourceAccountId },
       });
+
       const destinationAccount = await prisma.bankAccount.findUnique({
         where: { id: destinationAccountId },
       });
 
       if (!sourceAccount || !destinationAccount) {
-        return handleError(
-          res,
-          404,
-          `Can't find source or destination account`
-        );
+        if (!sourceAccount) {
+          return handleError(
+            res,
+            404,
+            `Can't find source account with account_id ${sourceAccountId}`
+          );
+        } else {
+          return handleError(
+            res,
+            404,
+            `Can't find destination account with account_id ${destinationAccountId}`
+          );
+        }
       }
 
       if (sourceAccount.balance < amount) {
@@ -37,7 +47,7 @@ module.exports = {
         );
       }
 
-      const updateSourceAccount = await prisma.bankAccount.update({
+      await prisma.bankAccount.update({
         where: { id: sourceAccountId },
         data: {
           balance: {
@@ -46,7 +56,7 @@ module.exports = {
         },
       });
 
-      const updateDestinationAccount = await prisma.bankAccount.update({
+      await prisma.bankAccount.update({
         where: { id: destinationAccountId },
         data: {
           balance: {
@@ -55,7 +65,7 @@ module.exports = {
         },
       });
 
-      const createTransaction = await prisma.transaction.create({
+      const transaction = await prisma.transaction.create({
         data: {
           amount: amount,
           sourceAccountId: sourceAccountId,
@@ -65,15 +75,9 @@ module.exports = {
 
       res.status(201).json({
         status: true,
-        message: `Transaction successsfully`,
-        data: createTransaction,
-        // sourceAccount: updateSourceAccount,
-        // destinationAccount: updateDestinationAccount,
-        // transaction: createTransaction,
+        message: `Transaction successfully`,
+        data: transaction,
       });
-
-      console.log("Source Account:", sourceAccount);
-      console.log("Destination Account:", destinationAccount);
     } catch (err) {
       next(err);
     }
@@ -109,7 +113,7 @@ module.exports = {
 
       res.status(200).json({
         status: true,
-        message: "Transaction successsfully",
+        message: "Transaction successfully",
         data: transaction,
       });
     } catch (error) {

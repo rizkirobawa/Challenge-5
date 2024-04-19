@@ -1,5 +1,4 @@
 const { PrismaClient } = require("@prisma/client");
-const { destroy } = require("./accountController");
 const prisma = new PrismaClient();
 
 // Error handling function

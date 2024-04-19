@@ -42,14 +42,14 @@ enum IdentityType {
 }
 
 model BankAccount {
-  id                       Int           @id @default(autoincrement())
-  bank_name                String
-  bank_account_number      String
-  balance                  Int           @default(0)
-  user                     User?         @relation(fields: [user_id], references: [id])
-  user_id                  Int?
-  TransactionAsSource      Transaction[] @relation("SourceAccountTransactions")
-  TransactionAsDestination Transaction[] @relation("DestinationAccountTransactions")
+  id                      Int           @id @default(autoincrement())
+  bank_name               String
+  bank_account_number     String
+  balance                 Int           @default(0)
+  user                    User?         @relation(fields: [user_id], references: [id])
+  user_id                 Int?
+  sourceTransactions      Transaction[] @relation("sourceTransactions")
+  destinationTransactions Transaction[] @relation("destinationTransactions")
 
   @@map("bank_accounts")
 }
@@ -57,9 +57,9 @@ model BankAccount {
 model Transaction {
   id                   Int         @id @default(autoincrement())
   amount               Int
-  sourceAccount        BankAccount @relation("SourceAccountTransactions", fields: [sourceAccountId], references: [id])
-  destinationAccount   BankAccount @relation("DestinationAccountTransactions", fields: [destinationAccountId], references: [id])
+  sourceAccount        BankAccount @relation("sourceTransactions", fields: [sourceAccountId], references: [id])
   sourceAccountId      Int
+  destinationAccount   BankAccount @relation("destinationTransactions", fields: [destinationAccountId], references: [id])
   destinationAccountId Int
 
   @@map("transactions")
