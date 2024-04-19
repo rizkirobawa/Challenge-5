@@ -6,8 +6,8 @@ const {
 } = require("../../controllers/v1/authController");
 const  {restrict}  = require("../../middlewares/auth.middleware");
 
-router.post("/register", register);
-router.post("/login", login);
-router.get("/authenticated", restrict, verified);
+router.post("/auth/register", register);
+router.post("/auth/login", login);
+router.get("/auth/authenticate", restrict, verified);
 
 module.exports = router;

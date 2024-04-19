@@ -159,7 +159,7 @@ paths:
                     example: Invalid email or password!
                   data:
                     example: ~
-  /authenticated:
+  /auth/authenticate:
     get:
       tags:
         - "Authentication"

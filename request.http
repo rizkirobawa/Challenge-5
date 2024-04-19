@@ -85,7 +85,7 @@ GET http://localhost:3000/api/v1/transactions/23
 DELETE http://localhost:3000/api/v1/transactions/22
 
 ### register
-POST http://localhost:3000/api/v1/register
+POST http://localhost:3000/api/v1/auth/register
 Content-Type: application/json
 
 {
@@ -95,7 +95,7 @@ Content-Type: application/json
 }
 
 ### login
-POST http://localhost:3000/api/v1/login
+POST http://localhost:3000/api/v1/auth/login
 Content-Type: application/json
 
 {
@@ -104,5 +104,5 @@ Content-Type: application/json
 }
 
 ### login verified
-GET http://localhost:3000/api/v1/authenticated
+GET http://localhost:3000/api/v1/auth/authenticate
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzU0NzUzMn0.H91EIveo3NkiLS7lv3B_7YmavOZ_XEI59Os2RZ1POok

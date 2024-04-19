@@ -4,7 +4,7 @@ const app = require("../../app");
 const request = require("supertest");
 let token = "";
 
-describe("test API metho POST with endpoint /api/v1/register", () => {
+describe("test API metho POST with endpoint /api/v1/auth/register", () => {
   let name = "anakdewa";
   let email = "anakdewa@gmail.com";
   let password = "123456";
@@ -16,7 +16,7 @@ describe("test API metho POST with endpoint /api/v1/register", () => {
   test("register user -> success", async () => {
     try {
       let { statusCode, body } = await request(app)
-        .post("/api/v1/register")
+        .post("/api/v1/auth/register")
         .send({
           name,
           email,
@@ -39,7 +39,7 @@ describe("test API metho POST with endpoint /api/v1/register", () => {
   test("register user -> error (email already used)", async () => {
     try {
       let { statusCode, body } = await request(app)
-        .post("/api/v1/register")
+        .post("/api/v1/auth/register")
         .send({
           name,
           email,
@@ -57,7 +57,7 @@ describe("test API metho POST with endpoint /api/v1/register", () => {
   test("register user -> error (input required)", async () => {
     try {
       let { statusCode, body } = await request(app)
-        .post("/api/v1/register")
+        .post("/api/v1/auth/register")
         .send({
           name,
           email,
@@ -72,13 +72,13 @@ describe("test API metho POST with endpoint /api/v1/register", () => {
   });
 });
 
-describe("test API metho POST with endpoint /api/v1/login", () => {
+describe("test API metho POST with endpoint /api/v1/auth/login", () => {
   let email = "anakdewa@gmail.com";
   let password = "123456";
 
   test("login user -> success", async () => {
     try {
-      let { statusCode, body } = await request(app).post("/api/v1/login").send({
+      let { statusCode, body } = await request(app).post("/api/v1/auth/login").send({
         email,
         password,
       });
@@ -102,7 +102,7 @@ describe("test API metho POST with endpoint /api/v1/login", () => {
     try {
       newEmail = "";
       newPassword = "123";
-      let { statusCode, body } = await request(app).post("/api/v1/login").send({
+      let { statusCode, body } = await request(app).post("/api/v1/auth/login").send({
         email: newEmail,
         password: newPassword,
       });
@@ -119,7 +119,7 @@ describe("test API metho POST with endpoint /api/v1/login", () => {
     try {
       newEmail = "ndik@gmail.com";
       newPassword = "123";
-      let { statusCode, body } = await request(app).post("/api/v1/login").send({
+      let { statusCode, body } = await request(app).post("/api/v1/auth/login").send({
         email: newEmail,
         password: newPassword,
       });
@@ -137,7 +137,7 @@ describe("test API method GET withendpoint /api/v1/authenticated", () => {
   test("login is verified -> success", async () => {
     try {
       let { statusCode, body } = await request(app)
-        .get("/api/v1/authenticated")
+        .get("/api/v1/auth/authenticate")
         .set("Authorization", `Bearer ${token}`);
 
       expect(statusCode).toBe(200);
@@ -156,7 +156,7 @@ describe("test API method GET withendpoint /api/v1/authenticated", () => {
     try {
       let newToken = "mdigmnidqwmigqigq";
       let { statusCode, body } = await request(app)
-        .get("/api/v1/authenticated")
+        .get("/api/v1/auth/authenticate")
         .set("Authorization", `Bearer ${newToken}`);
 
       expect(statusCode).toBe(401);
@@ -172,7 +172,7 @@ describe("test API method GET withendpoint /api/v1/authenticated", () => {
     try {
       let newToken = "";
       let { statusCode, body } = await request(app)
-        .get("/api/v1/authenticated")
+        .get("/api/v1/auth/authenticate")
         .set("Authorization", `Bearer ${newToken}`);
 
       expect(statusCode).toBe(402);
