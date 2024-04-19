@@ -34,19 +34,19 @@ Jika ingin melakukan testing secara terpisah, jalankan perintah untuk setiap mod
 
 ### Testing Users:
 
-    ```bash
-    yarn test:users  
-    ```
+```bash
+yarn test:users  
+```
 ### Testing Accounts:
 
-    ```bash
-    yarn test:accounts 
-    ```
+```bash
+yarn test:accounts 
+```
 ### Testing Transactions:
 
-    ```bash
-    yarn test:transactions
-    ```
+```bash
+yarn test:transactions
+```
 
 ## Testing Delete
 
@@ -58,16 +58,16 @@ Jika ingin melakukan testing delete pada setiap modul (users, accounts, transact
 
 ### Testing Users:
 
-    ```bash
-    yarn test:users  
-    ```
+```bash
+yarn test:users  
+```
 ### Testing Accounts:
 
-    ```bash
-    yarn test:accounts 
-    ```
+```bash
+yarn test:accounts 
+```
 ### Testing Transactions:
 
-    ```bash
-    yarn test:transactions
-    ```
+```bash
+yarn test:transactions
+```
