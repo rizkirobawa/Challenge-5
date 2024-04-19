@@ -11,6 +11,8 @@ externalDocs:
 servers:
   - url: http://localhost:3000/api/v1
 tags:
+  - name: Authentication
+    description: Operations about Authentication
   - name: Users
     description: Operations about Users
   - name: Accounts
@@ -18,6 +20,209 @@ tags:
   - name: Transactions
     description: Operations about Transactions
 paths:
+  /register:
+    post:
+      tags:
+        - "Authentication"
+      summary: Register user
+      description: Register user for login into system
+      requestBody:
+        required: true
+        $ref: "#/components/requestBodies/Register"
+      responses:
+        201:
+          description: The user has been successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Success
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          name:
+                            type: string
+                            example: kibow
+                          email:
+                            type: string
+                            example: kibow@gmail.com
+        400:
+          description: Email has already been used!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Email has already been used!
+                  data:
+                    example: ~
+        401:
+          description: Input must be required
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Input must be required!
+                  data:
+                    example: ~
+  /login:
+    post:
+      tags:
+        - "Authentication"
+      summary: Login user
+      description: Login user for login into system
+      requestBody:
+        required: true
+        $ref: "#/components/requestBodies/Login"
+      responses:
+        201:
+          description: The user has been successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Success
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          name:
+                            type: string
+                            example: kibow
+                          email:
+                            type: string
+                            example: kibow@gmail.com
+                          token:
+                            type: string
+                            example: nqeigonqiognqiongiqnfg
+        400:
+          description: Email and password are required!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Email and password are required!
+                  data:
+                    example: ~
+        401:
+          description: Invalid email or password!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid email or password!
+                  data:
+                    example: ~
+  /authenticated:
+    get:
+      tags:
+        - "Authentication"
+      summary: Authenticate user
+      description: Authenticate user with the token.
+      responses:
+        200:
+          description: Login was successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: OK
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: guntur
+                      email:
+                        type: string
+                        example: guntur@gmail.com
+        401:
+          description: jwt malformed!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: jwt malformed
+                  data:
+                    example: ~
+        402:
+          description: Token not provided!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: token not provided!!
+                  data:
+                    example: ~
+      security:  
+        - bearerAuth: []
   /users:
     post:
       tags:
@@ -606,6 +811,11 @@ paths:
                     type: string
                     example: Can't find transaction with ID 22
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     Users:
       type: object
@@ -740,3 +950,31 @@ components:
               destinationAccount:
                 type: integer
                 example: 2
+    Register:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: kibow
+              email:
+                type: string
+                example: kibow@gmail.com
+              password:
+                type: string
+                example: abc123
+    Login:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                example: kibow@gmail.com
+              password:
+                type: string
+                example: abc123
+

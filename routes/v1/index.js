@@ -1,8 +1,8 @@
 const router = require("express").Router();
-
 const User = require("./users.routes");
 const Account = require("./accounts.routes");
 const Transaction = require("./transactions.routes");
+const Auth = require("./auth.routes")
 
 const swaggerUI = require("swagger-ui-express");
 const yaml = require("yaml");
@@ -23,5 +23,8 @@ router.use(
 router.use("/api/v1", User);
 router.use("/api/v1", Account);
 router.use("/api/v1", Transaction);
+
+// Auth
+router.use("/api/v1", Auth);
 
 module.exports = router;

@@ -83,3 +83,26 @@ GET http://localhost:3000/api/v1/transactions/23
 
 ### delete transactions by id
 DELETE http://localhost:3000/api/v1/transactions/22
+
+### register
+POST http://localhost:3000/api/v1/register
+Content-Type: application/json
+
+{
+    "name": "poke",
+    "email": "poke@gmail.com",
+    "password": "123456"
+}
+
+### login
+POST http://localhost:3000/api/v1/login
+Content-Type: application/json
+
+{
+    "email": "poke@gmail.com",
+    "password": "123456"
+}
+
+### login verified
+GET http://localhost:3000/api/v1/authenticated
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzU0NzUzMn0.H91EIveo3NkiLS7lv3B_7YmavOZ_XEI59Os2RZ1POok
