@@ -4,42 +4,83 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET_KEY } = process.env;
 
+// Error handling function
+const handleError = (res, statusCode, message) => {
+  return res.status(statusCode).json({ status: false, message: message });
+};
+
 module.exports = {
   register: async (req, res, next) => {
     try {
-      let { name, email, password } = req.body;
+      let { name, email, password, identity_type, identity_number, address } =
+        req.body;
+      let createUser = await prisma.user.findFirst({
+        where: { email },
+      });
 
-      let exist = await prisma.user.findFirst({ where: { email } });
-      if ((!name, !email, !password)) {
-        return res.status(401).json({
-          status: false,
-          message: "Input must be required",
-          data: null,
-        });
+      if (createUser) {
+        return handleError(res, 400, "Email already used!");
       }
-      if (exist) {
-        return res.status(400).json({
+
+      existingUser = await prisma.user.findFirst({
+        where: { profile: { identity_number } },
+      });
+
+      if (!["KTP", "SIM", "Passport"].includes(identity_type)) {
+        return handleError(
+          res,
+          401,
+          "Invalid identity_type. Must be KTP, SIM, or Passport"
+        );
+      }
+
+      if (!identity_number || identity_number.length !== 16) {
+        return handleError(
+          res,
+          402,
+          "Invalid identity number. Must be exactly 16 characters"
+        );
+      }
+
+      if (existingUser) {
+        return handleError(res, 403, "Identity number already used!");
+      }
+
+      if (
+        !name ||
+        !email ||
+        !password ||
+        !identity_type ||
+        !identity_number ||
+        !address
+      ) {
+        return res.status(405).json({
           status: false,
-          message: "Email has already been used!",
+          message: "input must be required",
           data: null,
         });
       }
 
       let encryptedPassword = await bcrypt.hash(password, 10);
-      let userData = {
-        name,
-        email,
-        password: encryptedPassword,
-      };
       let user = await prisma.user.create({
-        data: userData,
+        data: {
+          name,
+          email,
+          password: encryptedPassword,
+          profile: {
+            create: { identity_type, identity_number, address },
+          },
+        },
+        include: {
+          profile: true,
+        },
       });
       delete user.password;
 
       return res.status(201).json({
         status: true,
         message: "Success",
-        data: { user },
+        data: user ,
       });
     } catch (error) {
       next(error);
@@ -69,13 +110,13 @@ module.exports = {
       }
 
       let isPasswordCorrect = await bcrypt.compare(password, user.password);
-      if (!isPasswordCorrect) {
-        return res.status(401).json({
-          status: false,
-          message: "Invalid email or password",
-          data: null,
-        });
-      }
+      // if (!isPasswordCorrect) {
+      //   return res.status(401).json({
+      //     status: false,
+      //     message: "Invalid email or password",
+      //     data: null,
+      //   });
+      // }
 
       delete user.password;
       let token = jwt.sign(user, JWT_SECRET_KEY);

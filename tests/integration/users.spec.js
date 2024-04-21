@@ -2,6 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const app = require("../../app");
 const request = require("supertest");
+let token = "";
 let user = {};
 
 describe("test API method POST with endpoint /v1/users", () => {
@@ -29,7 +30,7 @@ describe("test API method POST with endpoint /v1/users", () => {
         identity_number,
         address,
       });
-      
+
       user = body.data;
 
       expect(statusCode).toBe(201);
@@ -51,7 +52,6 @@ describe("test API method POST with endpoint /v1/users", () => {
       expect(body.data.profile.identity_type).toBe(identity_type);
       expect(body.data.profile.identity_number).toBe(identity_number);
       expect(body.data.profile.address).toBe(address);
-
     } catch (err) {
       throw err;
     }
@@ -134,12 +134,103 @@ describe("test API method POST with endpoint /v1/users", () => {
       throw err;
     }
   });
+  test("register user -> error (input required)", async () => {
+    try {
+      let { statusCode, body } = await request(app)
+        .post("/api/v1/users")
+        .send({
+          email: "test1212@gmail.com",
+          identity_type,
+          identity_number: "4856213987456123",
+        });
+
+      console.log("body", body);
+      expect(statusCode).toBe(405);
+      expect(body).toHaveProperty("status");
+      expect(body).toHaveProperty("message");
+    } catch (err) {
+      throw err;
+    }
+  });
+});
+
+describe("test API metho POST with endpoint /api/v1/auth/login", () => {
+  let email = "kibowz@gmail.com";
+  let password = "123456";
+
+  test("login user -> success", async () => {
+    try {
+      let { statusCode, body } = await request(app)
+        .post("/api/v1/auth/login")
+        .send({
+          email,
+          password,
+        });
+
+      token = body.data.token;
+      console.log("TOKEN:", token);
+
+      expect(statusCode).toBe(200);
+      expect(body).toHaveProperty("status");
+      expect(body).toHaveProperty("message");
+      expect(body).toHaveProperty("data");
+      expect(body.data).toHaveProperty("id");
+      expect(body.data).toHaveProperty("name");
+      expect(body.data).toHaveProperty("email");
+      expect(body.data).toHaveProperty("token");
+    } catch (err) {
+      throw err;
+    }
+  });
+
+  test("login user -> error (email or password is required)", async () => {
+    try {
+      newEmail = "";
+      newPassword = "123";
+      let { statusCode, body } = await request(app)
+        .post("/api/v1/auth/login")
+        .send({
+          email: newEmail,
+          password: newPassword,
+        });
+      expect(statusCode).toBe(400);
+      expect(body).toHaveProperty("status");
+      expect(body).toHaveProperty(
+        "message",
+        "Email and password are required!"
+      );
+      expect(body).toHaveProperty("data");
+    } catch (err) {
+      throw err;
+    }
+  });
+
+  test("login user -> error (invalid email or password)", async () => {
+    try {
+      newEmail = "ndik@gmail.com";
+      newPassword = "123";
+      let { statusCode, body } = await request(app)
+        .post("/api/v1/auth/login")
+        .send({
+          email: newEmail,
+          password: newPassword,
+        });
+      expect(statusCode).toBe(401);
+      expect(body).toHaveProperty("status");
+      expect(body).toHaveProperty("message");
+      expect(body).toHaveProperty("data");
+    } catch (err) {
+      throw err;
+    }
+  });
 });
 
 describe("test API method GET with endpoint /api/v1/users", () => {
   test("Get all users where registered -> success", async () => {
     try {
-      let { statusCode, body } = await request(app).get("/api/v1/users");
+      let { statusCode, body } = await request(app)
+        .get("/api/v1/users")
+        .set("Authorization", `Bearer ${token}`);
       expect(statusCode).toBe(200);
       expect(body).toHaveProperty("status");
       expect(body).toHaveProperty("message");
@@ -155,9 +246,9 @@ describe("test API method GET with endpoint /api/v1/users", () => {
 
   test("Get detail user by id -> success", async () => {
     try {
-      let { statusCode, body } = await request(app).get(
-        `/api/v1/users/${user.id}`
-      );
+      let { statusCode, body } = await request(app)
+        .get(`/api/v1/users/${user.id}`)
+        .set("Authorization", `Bearer ${token}`);
       expect(statusCode).toBe(200);
       expect(body).toHaveProperty("status");
       expect(body).toHaveProperty("message");
@@ -178,9 +269,9 @@ describe("test API method GET with endpoint /api/v1/users", () => {
 
   test("Get detail user by id -> error", async () => {
     try {
-      let { statusCode, body } = await request(app).get(
-        `/api/v1/users/${1233}`
-      );
+      let { statusCode, body } = await request(app)
+        .get(`/api/v1/users/${1233}`)
+        .set("Authorization", `Bearer ${token}`);
 
       expect(statusCode).toBe(404);
       expect(body).toHaveProperty("status", false);
@@ -194,13 +285,12 @@ describe("test API method GET with endpoint /api/v1/users", () => {
 describe("test API method PUT with endpoint /api/v1/users/:id", () => {
   test("Update user data -> success", async () => {
     try {
-      let newName = "hazet";
-      let newPassword = "123456abc";
-      let identity_number = "1234567891234567";
+      let name = "hazet";
 
       let { statusCode, body } = await request(app)
         .put(`/api/v1/users/${user.id}`)
-        .send({ name: newName, password: newPassword, identity_number });
+        .send({ name })
+        .set("Authorization", `Bearer ${token}`);
 
       expect(statusCode).toBe(200);
       expect(body).toHaveProperty("status");
@@ -210,39 +300,25 @@ describe("test API method PUT with endpoint /api/v1/users/:id", () => {
       expect(body.data).toHaveProperty("id");
       expect(body.data).toHaveProperty("name");
       expect(body.data).toHaveProperty("email");
-      expect(body.data).toHaveProperty("password");
       expect(body.data.profile).toHaveProperty("identity_type");
       expect(body.data.profile).toHaveProperty("identity_number");
       expect(body.data.profile).toHaveProperty("address");
       expect(body.data.profile).toHaveProperty("user_id");
-      expect(body.data.name).toBe(newName);
-      expect(body.data.password).toBe(newPassword);
-      expect(body.data.profile.identity_number).toBe(identity_number);
+      expect(body.data.name).toBe(name);
     } catch (err) {
       throw err;
     }
   });
 
-  test("Update user data -> error (invalid identity number length)", async () => {
+  test("test update data users -> error (one data must be provided)", async () => {
     try {
-      let newName = "Hazet";
-      let newPassword = "123456abc";
-      let newIdentityNumber = "12345678";
-
-      let { statusCode, body } = await request(app)
-        .put(`/api/v1/users/${user.id}`)
-        .send({
-          name: newName,
-          password: newPassword,
-          identity_number: newIdentityNumber,
-        });
-
+      let { statusCode, body } = await request(app).put(`/api/v1/users/${user.id}`)
+      .send({})
+      .set("Authorization", `Bearer ${token}`);
       expect(statusCode).toBe(400);
       expect(body).toHaveProperty("status");
-      expect(body).toHaveProperty(
-        "message",
-        "Invalid identity number. Must be exactly 16 characters"
-      );
+      expect(body).toHaveProperty("message", "At least one data must be provided for update");
+      expect(body).toHaveProperty("data");
     } catch (err) {
       throw err;
     }
@@ -252,7 +328,8 @@ describe("test API method PUT with endpoint /api/v1/users/:id", () => {
     try {
       let { statusCode, body } = await request(app)
         .put(`/api/v1/users/${1233}`)
-        .send({ identity_number: "1234567890123456" });
+        .send({ identity_number: "1234567890123456" })
+        .set("Authorization", `Bearer ${token}`);
 
       expect(statusCode).toBe(404);
       expect(body).toHaveProperty("status", false);
@@ -268,7 +345,7 @@ describe("test API method DELETE with endpoint /api/v1/users/:id", () => {
   //   try {
   //     let { statusCode, body } = await request(app).delete(
   //       `/api/v1/users/${user.id}`
-  //     );
+  //     ).set("Authorization", `Bearer ${token}`);
   //     expect(statusCode).toBe(200);
   //     expect(body).toHaveProperty("status");
   //     expect(body).toHaveProperty("message");
@@ -279,9 +356,9 @@ describe("test API method DELETE with endpoint /api/v1/users/:id", () => {
 
   test("Delete user by id -> error (user not found)", async () => {
     try {
-      let { statusCode, body } = await request(app).delete(
-        `/api/v1/users/${1235}`
-      );
+      let { statusCode, body } = await request(app)
+        .delete(`/api/v1/users/${1235}`)
+        .set("Authorization", `Bearer ${token}`);
       expect(statusCode).toBe(404);
       expect(body).toHaveProperty("status", false);
       expect(body).toHaveProperty("message", `User with ID ${1235} not found`);

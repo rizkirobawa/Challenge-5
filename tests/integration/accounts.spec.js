@@ -2,15 +2,26 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const app = require("../../app");
 const request = require("supertest");
+let token = "";
 let user;
 let account;
+console.log("token: ", token);
 
 describe("test API method POST with endpoint /api/v1/accounts", () => {
   beforeAll(async () => {
-    user = await prisma.user.findMany();
-    console.log("User list:", user);
     await prisma.transaction.deleteMany();
     await prisma.bankAccount.deleteMany();
+    user = await prisma.user.findMany();
+    try {
+      let email = "kibowz@gmail.com";
+      let password = "123";
+      let { body } = await request(app)
+        .post("/api/v1/auth/login")
+        .send({ email, password });
+      token = body.data.token;
+    } catch (error) {
+      console.error("Error login:", error);
+    }
   });
 
   test("Created Bank Account -> success", async () => {
@@ -26,10 +37,10 @@ describe("test API method POST with endpoint /api/v1/accounts", () => {
           bank_account_number,
           balance,
           user_id,
-        });
+        })
+        .set("Authorization", `Bearer ${token}`);
 
       account = body.data;
-      console.log("Account list:", account);
 
       expect(statusCode).toBe(201);
       expect(body).toHaveProperty("status");
@@ -60,7 +71,8 @@ describe("test API method POST with endpoint /api/v1/accounts", () => {
 
       let { statusCode, body } = await request(app)
         .post("/api/v1/accounts")
-        .send({ bank_name, bank_account_number, balance, user_id });
+        .send({ bank_name, bank_account_number, balance, user_id })
+        .set("Authorization", `Bearer ${token}`);
       expect(statusCode).toBe(401);
       expect(body).toHaveProperty("status");
       expect(body).toHaveProperty(
@@ -81,7 +93,8 @@ describe("test API method POST with endpoint /api/v1/accounts", () => {
 
       let { statusCode, body } = await request(app)
         .post("/api/v1/accounts")
-        .send({ bank_name, bank_account_number, balance, user_id });
+        .send({ bank_name, bank_account_number, balance, user_id })
+        .set("Authorization", `Bearer ${token}`);
       expect(statusCode).toBe(404);
       expect(body).toHaveProperty("status");
       expect(body).toHaveProperty(
@@ -97,7 +110,9 @@ describe("test API method POST with endpoint /api/v1/accounts", () => {
 describe("test API method GET with endpoint /api/v1/accounts", () => {
   test("Get all account -> success", async () => {
     try {
-      let { statusCode, body } = await request(app).get("/api/v1/accounts");
+      let { statusCode, body } = await request(app)
+        .get("/api/v1/accounts")
+        .set("Authorization", `Bearer ${token}`);
       expect(statusCode).toBe(200);
       expect(body).toHaveProperty("status");
       expect(body).toHaveProperty("message");
@@ -114,9 +129,9 @@ describe("test API method GET with endpoint /api/v1/accounts", () => {
 
   test("Get detail account by id -> success", async () => {
     try {
-      let { statusCode, body } = await request(app).get(
-        `/api/v1/accounts/${account.id}`
-      );
+      let { statusCode, body } = await request(app)
+        .get(`/api/v1/accounts/${account.id}`)
+        .set("Authorization", `Bearer ${token}`);
 
       expect(statusCode).toBe(200);
       expect(body).toHaveProperty("status");
@@ -145,9 +160,9 @@ describe("test API method GET with endpoint /api/v1/accounts", () => {
 
   test("Get detail account by id -> error (account not found)", async () => {
     try {
-      let { statusCode, body } = await request(app).get(
-        `/api/v1/accounts/${1233}`
-      );
+      let { statusCode, body } = await request(app)
+        .get(`/api/v1/accounts/${1233}`)
+        .set("Authorization", `Bearer ${token}`);
 
       expect(statusCode).toBe(404);
       expect(body).toHaveProperty("status", false);
@@ -173,7 +188,8 @@ describe(`test API method PUT with endpoint /api/v1/accounts/:id`, () => {
         .put(`/api/v1/accounts/${account.id}`)
         .send({
           bank_name: newBankName,
-        });
+        })
+        .set("Authorization", `Bearer ${token}`);
 
       expect(statusCode).toBe(200);
       expect(body).toHaveProperty("status");
@@ -195,7 +211,8 @@ describe(`test API method PUT with endpoint /api/v1/accounts/:id`, () => {
       let newBankName = "BNI";
       let { statusCode, body } = await request(app)
         .put(`/api/v1/accounts/${1233}`)
-        .send({ bank_name: newBankName });
+        .send({ bank_name: newBankName })
+        .set("Authorization", `Bearer ${token}`);
 
       expect(statusCode).toBe(404);
       expect(body).toHaveProperty("status", false);
@@ -210,28 +227,31 @@ describe(`test API method PUT with endpoint /api/v1/accounts/:id`, () => {
 });
 
 describe("test API method DELETE with endpoint /api/v1/accounts/:id", () => {
-    // test("Delete account by id -> success", async () => {
-    //     try {
-    //         let {statusCode, body} = await request(app).delete(`/api/v1/accounts/${account.id}`)
+  // test("Delete account by id -> success", async () => {
+  //     try {
+  //         let {statusCode, body} = await request(app).delete(`/api/v1/accounts/${account.id}`).set("Authorization", `Bearer ${token}`)
 
-    //         expect(statusCode).toBe(200)
-    //         expect(body).toHaveProperty("status")
-    //         expect(body).toHaveProperty("message", `Account with ID ${account.id} deleted successfully`)
-    //     } catch (err) {
-    //         throw err
-    //     }
-    // })
+  //         expect(statusCode).toBe(200)
+  //         expect(body).toHaveProperty("status")
+  //         expect(body).toHaveProperty("message", `Account with ID ${account.id} deleted successfully`)
+  //     } catch (err) {
+  //         throw err
+  //     }
+  // })
 
-    test("Delete account by id -> error (account not found)", async () => {
-        try {
-          let { statusCode, body } = await request(app).delete(
-            `/api/v1/accounts/${1233}`
-          );
-          expect(statusCode).toBe(404);
-          expect(body).toHaveProperty("status", false);
-          expect(body).toHaveProperty("message", `Account with ID ${1233} not found`);
-        } catch (err) {
-          throw err;
-        }
-      });
-})
+  test("Delete account by id -> error (account not found)", async () => {
+    try {
+      let { statusCode, body } = await request(app)
+        .delete(`/api/v1/accounts/${1233}`)
+        .set("Authorization", `Bearer ${token}`);
+      expect(statusCode).toBe(404);
+      expect(body).toHaveProperty("status", false);
+      expect(body).toHaveProperty(
+        "message",
+        `Account with ID ${1233} not found`
+      );
+    } catch (err) {
+      throw err;
+    }
+  });
+});

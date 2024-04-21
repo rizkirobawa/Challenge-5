@@ -74,6 +74,45 @@ paths:
                   data:
                     example: ~
         401:
+          description: Invalid identity_type. Must be KTP, SIM, or Passport
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid identity_type. Must be KTP, SIM, or Passport
+        402:
+          description: Invalid identity_type. Must be KTP, SIM, or Passport
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid identity number. Must be exactly 16 characters
+        403:
+          description: Identity number must be unique
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Identity number already used!
+        405:
           description: Input must be required
           content:
             application/json:
@@ -305,6 +344,21 @@ paths:
                   message:
                     type: string
                     example: Identity number already used!
+        405:
+          description: Input must be required
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Input must be required!
+                  data:
+                    example: ~
     get:
       tags:
         - "Users"
@@ -399,7 +453,7 @@ paths:
           required: true
       requestBody:
         required: true
-        $ref: "#/components/requestBodies/CreateUserWithProfile"
+        $ref: "#/components/requestBodies/UpdateUser"
       responses:
         200:
           description: Edit user by id
@@ -422,6 +476,21 @@ paths:
                           profile:
                             $ref: "#/components/schemas/Profiles"
         400:
+          description: Input must be provided!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: At least one data must be provided for update
+                  data:
+                    example: ~
+        404:
           description: User with ID 23 not found
           content:
             application/json:
@@ -941,6 +1010,24 @@ components:
               address:
                 type: string
                 example: Jl. Menuju Surga No.3
+    UpdateUser: 
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: anakdewa
+              identity_type:
+                type: string
+                example: KTP
+              identity_number:
+                type: string
+                example: "98764927416589"
+              address:
+                type: string
+                example: Jalan Space X
     CreateAccount:
       content:
         application/json:

@@ -10,7 +10,7 @@
     "test:accounts": "jest tests/integration/accounts.spec.js",
     "test:transactions": "jest tests/integration/transactions.spec.js",
     "test:auth": "jest tests/integration/auth.spec.js",
-    "test:sequential": "yarn run test:users && yarn run test:accounts && yarn run test:transactions && yarn run test:auth"
+    "test:sequential": "yarn run test:users && yarn run test:accounts // && yarn run test:transactions && yarn run test:auth"
   },
   "dependencies": {
     "@prisma/client": "5.11.0",

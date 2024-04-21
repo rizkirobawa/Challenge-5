@@ -21,18 +21,12 @@ GET http://localhost:3000/api/v1/users/84
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzcxNDE4NH0.rTMBaKCkfTD0oI5gm4l03JEqxzhH7LBpa0SLmUbMRIE
 
 ### update users includ profiles by id
-PUT http://localhost:3000/api/v1/users/11
+PUT http://localhost:3000/api/v1/users/97
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzcxNDE4NH0.rTMBaKCkfTD0oI5gm4l03JEqxzhH7LBpa0SLmUbMRIE
 Content-Type: application/json
 
 {
-    "name": "pOke777",
-    "email": "poke777@gmail.com",
-    "password": "poke2",
-    "identity_type": "KTP",
-    "identity_number": "3578012412020127",
-    "address": "Jl. Babatan No 3"
-
+    "identity_type": "SIM"
 }
 
 ### delete users by id
@@ -48,7 +42,7 @@ Content-Type: application/json
     "bank_name": "Mandiri",
     "bank_account_number": "143947632227195",
     "balance": 750000,
-    "user_id": 86
+    "user_id": 97
 }
 
 ### get all accounts
@@ -60,7 +54,7 @@ GET http://localhost:3000/api/v1/accounts/24
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzcxNDE4NH0.rTMBaKCkfTD0oI5gm4l03JEqxzhH7LBpa0SLmUbMRIE
 
 ### update accounts by id
-PUT http://localhost:3000/api/v1/accounts/111
+PUT http://localhost:3000/api/v1/accounts/97
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzcxNDE4NH0.rTMBaKCkfTD0oI5gm4l03JEqxzhH7LBpa0SLmUbMRIE
 Content-Type: application/json
 
@@ -97,14 +91,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiO
 DELETE http://localhost:3000/api/v1/transactions/22
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzcxNDE4NH0.rTMBaKCkfTD0oI5gm4l03JEqxzhH7LBpa0SLmUbMRIE
 
-### register
+### Register
 POST http://localhost:3000/api/v1/auth/register
 Content-Type: application/json
 
 {
-    "name": "poke",
-    "email": "poke@gmail.com",
-    "password": "123456"
+    "name": "sabrina",
+    "email": "sabrina@gmail.com",
+    "password": "abc",
+    "identity_type": "KTP",
+    "identity_number": "5791562485915648",
+    "address": "Jalan Kemenangan 11"
 }
 
 ### login
@@ -112,7 +109,7 @@ POST http://localhost:3000/api/v1/auth/login
 Content-Type: application/json
 
 {
-    "email": "poke@gmail.com",
+    "email": "asto1@gmail.com",
     "password": "123456"
 }
 

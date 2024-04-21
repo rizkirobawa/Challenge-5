@@ -5,7 +5,7 @@ module.exports = {
   restrict: (req, res, next) => {
     let { authorization } = req.headers;
     if (!authorization || !authorization.split(" ")[1]) {
-      return res.status(402).json({
+      return res.status(409).json({
         status: false,
         message: "token not provided",
         data: null,
@@ -15,7 +15,7 @@ module.exports = {
     let token = authorization.split(" ")[1];
     jwt.verify(token, JWT_SECRET_KEY, (err, user) => {
       if (err) {
-        return res.status(401).json({
+        return res.status(403).json({
           status: false,
           message: err.message,
           data: null,

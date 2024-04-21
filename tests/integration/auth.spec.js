@@ -5,11 +5,17 @@ const request = require("supertest");
 let token = "";
 
 describe("test API metho POST with endpoint /api/v1/auth/register", () => {
-  let name = "anakdewa";
-  let email = "anakdewa@gmail.com";
+  let name = "kibowz";
+  let email = "kibowz@gmail.com";
   let password = "123456";
+  let identity_type = "KTP";
+  let identity_number = "8763849102831531";
+  let address = "Jalan To The Moon 2025";
 
   beforeAll(async () => {
+    await prisma.transaction.deleteMany();
+    await prisma.bankAccount.deleteMany();
+    await prisma.profile.deleteMany();
     await prisma.user.deleteMany();
   });
 
@@ -21,22 +27,34 @@ describe("test API metho POST with endpoint /api/v1/auth/register", () => {
           name,
           email,
           password,
+          identity_type,
+          identity_number,
+          address,
         });
 
       expect(statusCode).toBe(201);
       expect(body).toHaveProperty("status");
       expect(body).toHaveProperty("message");
       expect(body).toHaveProperty("data");
-      expect(body.data).toHaveProperty("user");
-      expect(body.data.user).toHaveProperty("id");
-      expect(body.data.user).toHaveProperty("name");
-      expect(body.data.user).toHaveProperty("email");
+      expect(body.data).toHaveProperty("id");
+      expect(body.data).toHaveProperty("name");
+      expect(body.data).toHaveProperty("email");
+      expect(body.data).toHaveProperty("profile");
+      expect(body.data.profile).toHaveProperty("identity_type");
+      expect(body.data.profile).toHaveProperty("identity_number");
+      expect(body.data.profile).toHaveProperty("address");
+      expect(body.data.profile).toHaveProperty("user_id");
+      expect(body.data.name).toBe(name);
+      expect(body.data.email).toBe(email);
+      expect(body.data.profile.identity_type).toBe(identity_type);
+      expect(body.data.profile.identity_number).toBe(identity_number);
+      expect(body.data.profile.address).toBe(address);
     } catch (err) {
       throw err;
     }
   });
 
-  test("register user -> error (email already used)", async () => {
+  test("register user -> error (Email already used)", async () => {
     try {
       let { statusCode, body } = await request(app)
         .post("/api/v1/auth/register")
@@ -44,11 +62,13 @@ describe("test API metho POST with endpoint /api/v1/auth/register", () => {
           name,
           email,
           password,
+          identity_type,
+          identity_number,
+          address,
         });
       expect(statusCode).toBe(400);
       expect(body).toHaveProperty("status");
       expect(body).toHaveProperty("message");
-      expect(body).toHaveProperty("data");
     } catch (err) {
       throw err;
     }
@@ -59,13 +79,82 @@ describe("test API metho POST with endpoint /api/v1/auth/register", () => {
       let { statusCode, body } = await request(app)
         .post("/api/v1/auth/register")
         .send({
-          name,
-          email,
+          email: "test1212@gmail.com",
+          identity_type,
+          identity_number: "4856213987456123",
         });
-      expect(statusCode).toBe(401);
+
+      console.log("body", body);
+      expect(statusCode).toBe(405);
       expect(body).toHaveProperty("status");
       expect(body).toHaveProperty("message");
-      expect(body).toHaveProperty("data");
+    } catch (err) {
+      throw err;
+    }
+  });
+  test("Invalid identity_type. Must be KTP, SIM, or Passport -> error", async () => {
+    try {
+      identity_type = "ATM";
+      let { statusCode, body } = await request(app)
+        .post("/api/v1/auth/register")
+        .send({
+          name,
+          email: "newKibowz@gmail.com",
+          password,
+          identity_type,
+          identity_number,
+          address,
+        });
+      expect(statusCode).toBe(401);
+      expect(body).toHaveProperty("status", false);
+      expect(body).toHaveProperty(
+        "message",
+        "Invalid identity_type. Must be KTP, SIM, or Passport"
+      );
+    } catch (err) {
+      throw err;
+    }
+  });
+
+  test("Invalid identity number. Must be exactly 16 characters -> error", async () => {
+    try {
+      let { statusCode, body } = await request(app)
+        .post("/api/v1/auth/register")
+        .send({
+          name,
+          email: "newKibowz@gmail.com",
+          password,
+          identity_type: "KTP",
+          identity_number: "918241481",
+          address,
+        });
+      expect(statusCode).toBe(402);
+      expect(body).toHaveProperty("status", false);
+      expect(body).toHaveProperty(
+        "message",
+        "Invalid identity number. Must be exactly 16 characters"
+      );
+    } catch (err) {
+      throw err;
+    }
+  });
+  test("Identity number already used! -> error", async () => {
+    try {
+      identity_type = "KTP";
+      identity_number = "8763849102831531";
+      let { statusCode, body } = await request(app)
+        .post("/api/v1/auth/register")
+        .send({
+          name,
+          email: "newKibowz@gmail.com",
+          password,
+          identity_type,
+          identity_number,
+          address,
+        });
+      expect(statusCode).toBe(403);
+      expect(body).toHaveProperty("status", false);
+      expect(body).toHaveProperty("message", "Identity number already used!");
     } catch (err) {
       throw err;
     }
@@ -73,15 +162,17 @@ describe("test API metho POST with endpoint /api/v1/auth/register", () => {
 });
 
 describe("test API metho POST with endpoint /api/v1/auth/login", () => {
-  let email = "anakdewa@gmail.com";
-  let password = "123456";
+  let email = "kibowz@gmail.com";
+  let password = "123";
 
   test("login user -> success", async () => {
     try {
-      let { statusCode, body } = await request(app).post("/api/v1/auth/login").send({
-        email,
-        password,
-      });
+      let { statusCode, body } = await request(app)
+        .post("/api/v1/auth/login")
+        .send({
+          email,
+          password,
+        });
 
       token = body.data.token;
 
@@ -101,14 +192,19 @@ describe("test API metho POST with endpoint /api/v1/auth/login", () => {
   test("login user -> error (email or password is required)", async () => {
     try {
       newEmail = "";
-      newPassword = "123";
-      let { statusCode, body } = await request(app).post("/api/v1/auth/login").send({
-        email: newEmail,
-        password: newPassword,
-      });
+      newPassword = "1234";
+      let { statusCode, body } = await request(app)
+        .post("/api/v1/auth/login")
+        .send({
+          email: newEmail,
+          password: newPassword,
+        });
       expect(statusCode).toBe(400);
       expect(body).toHaveProperty("status");
-      expect(body).toHaveProperty("message", "Email and password are required!");
+      expect(body).toHaveProperty(
+        "message",
+        "Email and password are required!"
+      );
       expect(body).toHaveProperty("data");
     } catch (err) {
       throw err;
@@ -119,10 +215,12 @@ describe("test API metho POST with endpoint /api/v1/auth/login", () => {
     try {
       newEmail = "ndik@gmail.com";
       newPassword = "123";
-      let { statusCode, body } = await request(app).post("/api/v1/auth/login").send({
-        email: newEmail,
-        password: newPassword,
-      });
+      let { statusCode, body } = await request(app)
+        .post("/api/v1/auth/login")
+        .send({
+          email: newEmail,
+          password: newPassword,
+        });
       expect(statusCode).toBe(401);
       expect(body).toHaveProperty("status");
       expect(body).toHaveProperty("message");
@@ -159,7 +257,7 @@ describe("test API method GET withendpoint /api/v1/authenticated", () => {
         .get("/api/v1/auth/authenticate")
         .set("Authorization", `Bearer ${newToken}`);
 
-      expect(statusCode).toBe(401);
+      expect(statusCode).toBe(403);
       expect(body).toHaveProperty("status");
       expect(body).toHaveProperty("message", "jwt malformed");
       expect(body).toHaveProperty("data");
@@ -175,7 +273,7 @@ describe("test API method GET withendpoint /api/v1/authenticated", () => {
         .get("/api/v1/auth/authenticate")
         .set("Authorization", `Bearer ${newToken}`);
 
-      expect(statusCode).toBe(402);
+      expect(statusCode).toBe(409);
       expect(body).toHaveProperty("status");
       expect(body).toHaveProperty("message", "token not provided");
       expect(body).toHaveProperty("data");

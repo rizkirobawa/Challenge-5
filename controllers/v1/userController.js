@@ -43,6 +43,17 @@ module.exports = {
         return handleError(res, 403, "Identity number already used!");
       }
 
+      if (
+        !name ||
+        !email ||
+        !password ||
+        !identity_type ||
+        !identity_number ||
+        !address
+      ) {
+        return handleError(res,405,"input must be required")
+      }
+
       let user = await prisma.user.create({
         data: {
           name,
@@ -132,44 +143,46 @@ module.exports = {
   update: async (req, res, next) => {
     try {
       const id = Number(req.params.id);
-      const { name, email, password, identity_type, identity_number, address } =
-        req.body;
+      const { name, identity_type, identity_number, address } = req.body;
 
-      if (!identity_number || identity_number.length !== 16) {
-        return handleError(
-          res,
-          400,
-          "Invalid identity number. Must be exactly 16 characters"
-        );
+      if (!name && !identity_type && !identity_number && !address) {
+        return res.status(400).json({
+          status: false,
+          message: "At least one data must be provided for update",
+          data: null,
+        });
       }
-      
+
       const exist = await prisma.user.findUnique({
         where: { id },
       });
-      
+
       if (!exist) {
-        return handleError(res, 404, `User with ID ${id} not found`);
+        return res.status(404).json({
+          status: false,
+          message: `User with ID ${id} not found`,
+          data: null,
+        });
       }
 
       const user = await prisma.user.update({
-        where: { id: id },
+        where: { id },
         data: {
-          name: name,
-          email: email,
-          password: password,
+          name,
           profile: {
-            update: {
-              identity_type: identity_type,
-              identity_number: identity_number,
-              address: address,
-            },
+            update: { identity_type, identity_number, address },
           },
         },
         include: {
           profile: true,
         },
       });
-
+      delete user.password;
+      res.status(200).json({
+        status: true,
+        message: "User updated successfully",
+        data: user,
+      });
 
       res.status(200).json({
         status: true,

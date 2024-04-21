@@ -3,6 +3,7 @@ const prisma = new PrismaClient();
 const app = require("../../app");
 const request = require("supertest");
 
+let token = "";
 let user;
 let account;
 let account2;
@@ -12,8 +13,17 @@ describe("test API method POST with endpoint /api/v1/transactions", () => {
   beforeAll(async () => {
     await prisma.transaction.deleteMany();
     user = await prisma.user.findMany();
+    try {
+      let email = "kibowz@gmail.com";
+      let password = "123";
+      let { body } = await request(app)
+        .post("/api/v1/auth/login")
+        .send({ email, password });
+      token = body.data.token;
+    } catch (error) {
+      throw error;
+    }
     account = await prisma.bankAccount.findMany();
-    console.log("Account list:", account);
   });
 
   test("create new transaction -> success", async () => {
@@ -43,7 +53,7 @@ describe("test API method POST with endpoint /api/v1/transactions", () => {
           amount,
           sourceAccountId,
           destinationAccountId,
-        });
+        }).set("Authorization", `Bearer ${token}`);
 
       transaction = body.data;
 
@@ -75,7 +85,7 @@ describe("test API method POST with endpoint /api/v1/transactions", () => {
           amount,
           sourceAccountId,
           destinationAccountId,
-        });
+        }).set("Authorization", `Bearer ${token}`);
 
       expect(statusCode).toBe(400);
       expect(body).toHaveProperty("status");
@@ -100,7 +110,7 @@ describe("test API method POST with endpoint /api/v1/transactions", () => {
           amount,
           sourceAccountId,
           destinationAccountId,
-        });
+        }).set("Authorization", `Bearer ${token}`);
 
       expect(statusCode).toBe(404);
       expect(body).toHaveProperty("status");
@@ -125,7 +135,7 @@ describe("test API method POST with endpoint /api/v1/transactions", () => {
           amount,
           sourceAccountId,
           destinationAccountId,
-        });
+        }).set("Authorization", `Bearer ${token}`);
 
       expect(statusCode).toBe(404);
       expect(body).toHaveProperty("status");
@@ -142,7 +152,7 @@ describe("test API method POST with endpoint /api/v1/transactions", () => {
 describe("test API method GET with endpoint /api/v1/transactions", () => {
   test("Get all transaction -> success", async () => {
     try {
-      let { statusCode, body } = await request(app).get("/api/v1/transactions");
+      let { statusCode, body } = await request(app).get("/api/v1/transactions").set("Authorization", `Bearer ${token}`);
 
       expect(statusCode).toBe(200);
       expect(body).toHaveProperty("status");
@@ -158,9 +168,11 @@ describe("test API method GET with endpoint /api/v1/transactions", () => {
   });
 });
 
-describe("", () => {
+describe("test API method GET with endpoint /api/v1/transactions/:id", () => {
   test("Get transaction by id -> success", async () => {
-    let { statusCode, body } = await request(app).get(`/api/v1/transactions/${transaction.id}`);
+    let { statusCode, body } = await request(app).get(
+      `/api/v1/transactions/${transaction.id}`
+    ).set("Authorization", `Bearer ${token}`);
 
     expect(statusCode).toBe(200);
     expect(body).toHaveProperty("status");
@@ -184,22 +196,22 @@ describe("", () => {
     expect(body.data.destinationAccount).toHaveProperty("user_id");
   });
 
-  test('Get transaction by id -> error (transaction not found)',async() => {
+  test("Get transaction by id -> error (transaction not found)", async () => {
     try {
-      let { statusCode, body } = await request(app)
-      .get(`/api/v1/transactions/${transaction.id * -1}`)
+      let { statusCode, body } = await request(app).get(
+        `/api/v1/transactions/${transaction.id * -1}`
+      ).set("Authorization", `Bearer ${token}`);
 
-    expect(statusCode).toBe(404);
-    expect(body).toHaveProperty("status");
-    expect(body).toHaveProperty(
-      "message",
-      `Can't find transaction with ID ${transaction.id * -1}`
-    );
+      expect(statusCode).toBe(404);
+      expect(body).toHaveProperty("status");
+      expect(body).toHaveProperty(
+        "message",
+        `Can't find transaction with ID ${transaction.id * -1}`
+      );
     } catch (err) {
-      throw err
+      throw err;
     }
-  })
-  
+  });
 });
 
 describe("test API method DELETE with endpoint /api/v1/transactions/:id", () => {
@@ -211,7 +223,7 @@ describe("test API method DELETE with endpoint /api/v1/transactions/:id", () => 
   //   try {
   //     let { statusCode, body } = await request(app).delete(
   //       `/api/v1/transactions/${transaction[0].id}`
-  //     );
+  //     ).set("Authorization", `Bearer ${token}`);
 
   //     expect(statusCode).toBe(200);
   //     expect(body).toHaveProperty("status");
@@ -228,7 +240,7 @@ describe("test API method DELETE with endpoint /api/v1/transactions/:id", () => 
     try {
       let { statusCode, body } = await request(app).delete(
         `/api/v1/transactions/${transaction[0].id * -1}`
-      );
+      ).set("Authorization", `Bearer ${token}`);
 
       expect(statusCode).toBe(404);
       expect(body).toHaveProperty("status");
