@@ -6,12 +6,13 @@ const {
   destroy,
   update,
 } = require("../../controllers/v1/accountController");
+const { restrict } = require("../../middlewares/auth.middleware");
 
 // API Bank_Account
-router.post("/accounts", create);
-router.get("/accounts", index);
-router.get("/accounts/:id", show);
-router.put("/accounts/:id", update);
-router.delete("/accounts/:id", destroy);
+router.post("/accounts", restrict, create);
+router.get("/accounts", restrict, index);
+router.get("/accounts/:id", restrict, show);
+router.put("/accounts/:id", restrict, update);
+router.delete("/accounts/:id", restrict, destroy);
 
 module.exports = router;

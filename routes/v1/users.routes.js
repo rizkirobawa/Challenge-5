@@ -6,12 +6,13 @@ const {
   update,
   destroy,
 } = require("../../controllers/v1/userController");
+const { restrict } = require("../../middlewares/auth.middleware");
 
-// API Endpoint users
-router.post("/users", register);
-router.get("/users", index);
-router.get("/users/:id", show);
-router.put("/users/:id", update);
-router.delete("/users/:id", destroy);
+// API Endpoint users with restrict
+router.post("/users", restrict, register);
+router.get("/users", restrict, index);
+router.get("/users/:id", restrict, show);
+router.put("/users/:id", restrict, update);
+router.delete("/users/:id", restrict, destroy);
 
 module.exports = router;

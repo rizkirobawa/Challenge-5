@@ -334,6 +334,8 @@ paths:
                     items:
                       type: object
                       $ref: "#/components/schemas/Users"
+      security:  
+      - bearerAuth: []
   /users/{id}:
     get:
       tags:
@@ -381,6 +383,8 @@ paths:
                   message:
                     type: string
                     example: Can't find user with ID
+      security:  
+        - bearerAuth: []
     put:
       tags:
         - "Users"
@@ -430,6 +434,8 @@ paths:
                   message:
                     type: string
                     example: User with ID 23 not found
+      security:  
+        - bearerAuth: []
     delete:
       tags:
         - "Users"
@@ -456,6 +462,8 @@ paths:
                   message:
                     type: string
                     example: User with ID 14 deleted successfully
+      security:  
+        - bearerAuth: []
   /accounts:
     post:
       tags:
@@ -495,6 +503,8 @@ paths:
                   message:
                     type: string
                     example: Account with ID 23 not found
+      security:  
+        - bearerAuth: []
     get:
       tags:
         - "Accounts"
@@ -519,6 +529,8 @@ paths:
                     items:
                       type: object
                       $ref: "#/components/schemas/Accounts"
+      security:  
+        - bearerAuth: []
   /accounts/{id}:
     get:
       tags:
@@ -560,6 +572,8 @@ paths:
                   message:
                     type: string
                     example: Can't find account with ID 23
+      security:  
+        - bearerAuth: []
     put:
       tags:
         - "Accounts"
@@ -603,6 +617,8 @@ paths:
                   message:
                     type: string
                     example: Account with ID 23 not found
+      security:  
+        - bearerAuth: []
     delete:
       tags:
         - "Accounts"
@@ -641,6 +657,8 @@ paths:
                   message:
                     type: string
                     example: Account with ID 23 not found
+      security:  
+        - bearerAuth: []
   /transactions:
     post:
       tags:
@@ -699,6 +717,8 @@ paths:
                   message:
                     type: string
                     example: Can't find source or destination account
+      security:  
+        - bearerAuth: []
     get:
       tags:
         - "Transactions"
@@ -723,6 +743,8 @@ paths:
                     items:
                       type: object
                       $ref: "#/components/schemas/Transactions"
+      security:  
+        - bearerAuth: []
   /transactions/{id}:
     get:
       tags:
@@ -810,6 +832,8 @@ paths:
                   message:
                     type: string
                     example: Can't find transaction with ID 22
+      security:  
+          - bearerAuth: []
 components:
   securitySchemes:
     bearerAuth:

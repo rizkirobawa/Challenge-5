@@ -14,12 +14,15 @@ Content-Type: application/json
 
 ### get all users
 GET http://localhost:3000/api/v1/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzcxNDE4NH0.rTMBaKCkfTD0oI5gm4l03JEqxzhH7LBpa0SLmUbMRIE
 
 ### get users by id
 GET http://localhost:3000/api/v1/users/84
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzcxNDE4NH0.rTMBaKCkfTD0oI5gm4l03JEqxzhH7LBpa0SLmUbMRIE
 
 ### update users includ profiles by id
 PUT http://localhost:3000/api/v1/users/11
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzcxNDE4NH0.rTMBaKCkfTD0oI5gm4l03JEqxzhH7LBpa0SLmUbMRIE
 Content-Type: application/json
 
 {
@@ -33,10 +36,12 @@ Content-Type: application/json
 }
 
 ### delete users by id
-DELETE http://localhost:3000/api/v1/users/
+DELETE http://localhost:3000/api/v1/users/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzcxNDE4NH0.rTMBaKCkfTD0oI5gm4l03JEqxzhH7LBpa0SLmUbMRIE
 
 ### create bank_accounts
 POST http://localhost:3000/api/v1/accounts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzcxNDE4NH0.rTMBaKCkfTD0oI5gm4l03JEqxzhH7LBpa0SLmUbMRIE
 Content-Type: application/json
 
 {
@@ -48,12 +53,15 @@ Content-Type: application/json
 
 ### get all accounts
 GET http://localhost:3000/api/v1/accounts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzcxNDE4NH0.rTMBaKCkfTD0oI5gm4l03JEqxzhH7LBpa0SLmUbMRIE
 
 ### get account by id
 GET http://localhost:3000/api/v1/accounts/24
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzcxNDE4NH0.rTMBaKCkfTD0oI5gm4l03JEqxzhH7LBpa0SLmUbMRIE
 
 ### update accounts by id
 PUT http://localhost:3000/api/v1/accounts/111
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzcxNDE4NH0.rTMBaKCkfTD0oI5gm4l03JEqxzhH7LBpa0SLmUbMRIE
 Content-Type: application/json
 
 {
@@ -64,9 +72,11 @@ Content-Type: application/json
 
 ### delete accounts by id
 DELETE http://localhost:3000/api/v1/accounts/86
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzcxNDE4NH0.rTMBaKCkfTD0oI5gm4l03JEqxzhH7LBpa0SLmUbMRIE
 
 ### create transactions
 POST http://localhost:3000/api/v1/transactions
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzcxNDE4NH0.rTMBaKCkfTD0oI5gm4l03JEqxzhH7LBpa0SLmUbMRIE
 Content-Type: application/json
 
 {
@@ -77,12 +87,15 @@ Content-Type: application/json
 
 ### get all transactions
 GET http://localhost:3000/api/v1/transactions
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzcxNDE4NH0.rTMBaKCkfTD0oI5gm4l03JEqxzhH7LBpa0SLmUbMRIE
 
 ### get transactions by id
 GET http://localhost:3000/api/v1/transactions/23
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzcxNDE4NH0.rTMBaKCkfTD0oI5gm4l03JEqxzhH7LBpa0SLmUbMRIE
 
 ### delete transactions by id
 DELETE http://localhost:3000/api/v1/transactions/22
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzcxNDE4NH0.rTMBaKCkfTD0oI5gm4l03JEqxzhH7LBpa0SLmUbMRIE
 
 ### register
 POST http://localhost:3000/api/v1/auth/register
@@ -103,6 +116,6 @@ Content-Type: application/json
     "password": "123456"
 }
 
-### login verified
+### login verified with token
 GET http://localhost:3000/api/v1/auth/authenticate
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzU0NzUzMn0.H91EIveo3NkiLS7lv3B_7YmavOZ_XEI59Os2RZ1POok
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJwb2tlIiwiZW1haWwiOiJwb2tlQGdtYWlsLmNvbSIsImlhdCI6MTcxMzcxNDE4NH0.rTMBaKCkfTD0oI5gm4l03JEqxzhH7LBpa0SLmUbMRIE

@@ -6,11 +6,12 @@ const {
   show,
   destroy,
 } = require("../../controllers/v1/transactionController");
+const { restrict } = require("../../middlewares/auth.middleware");
 
-// API Transactions
-router.post("/transactions", create);
-router.get("/transactions", index);
-router.get("/transactions/:id", show);
-router.delete("/transactions/:id", destroy);
+// API Transactions with restrict
+router.post("/transactions", restrict, create);
+router.get("/transactions", restrict, index);
+router.get("/transactions/:id", restrict, show);
+router.delete("/transactions/:id", restrict, destroy);
 
 module.exports = router;
